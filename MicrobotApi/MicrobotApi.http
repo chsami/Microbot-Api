@@ -1,0 +1,6 @@
+@MicrobotApi_HostAddress = http://localhost:5029
+
+GET {{MicrobotApi_HostAddress}}/token/
+Accept: application/json
+
+###
