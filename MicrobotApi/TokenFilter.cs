@@ -1,23 +1,24 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using MicrobotApi.Database;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MicrobotApi;
 
 public class TokenFilter : IHubFilter
 {
-    private readonly ConnectionManager _connectionManager;
+    private readonly MicrobotContext _microbotContext;
     private const string invalidTokenMessage = "Invalid token!";
     
-    public TokenFilter(ConnectionManager connectionManager)
+    public TokenFilter(MicrobotContext microbotContext)
     {
-        _connectionManager = connectionManager;
+        _microbotContext = microbotContext;
     }
     public async ValueTask<object> InvokeMethodAsync(
         HubInvocationContext invocationContext, Func<HubInvocationContext, ValueTask<object>> next)
     {
 
         var token = GetToken(invocationContext.Context);
-
-        var exists = _connectionManager.Connections.Contains(token);
+        
+        var exists = !string.IsNullOrWhiteSpace(token) && _microbotContext.Sessions.Any(x => x.Id == new Guid(token));
         if (!exists)
             throw new UnauthorizedAccessException(invalidTokenMessage);
         

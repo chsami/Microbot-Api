@@ -2,5 +2,5 @@
 
 public class TokenRequestModel
 {
-    public String Token { get; set; }
+    public string SessionId { get; set; }
 }
