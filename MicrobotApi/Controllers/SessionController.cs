@@ -12,12 +12,14 @@ public class SessionController : Controller
 {
     private readonly MicrobotContext _microbotContext;
     private readonly IMemoryCache _memoryCache;
+    private readonly IConfiguration _configuration;
     private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(5);
     
-    public SessionController(MicrobotContext microbotContext, IMemoryCache memoryCache)
+    public SessionController(MicrobotContext microbotContext, IMemoryCache memoryCache, IConfiguration configuration)
     {
         _microbotContext = microbotContext;
         _memoryCache = memoryCache;
+        _configuration = configuration;
     }
     
     [HttpGet("")]
@@ -73,6 +75,12 @@ public class SessionController : Controller
     public IActionResult CountLoggedIn()
     {       
         return Ok(GetCachedLoggedInCount());
+    }
+    
+    [HttpGet("count/test")]
+    public IActionResult Tester()
+    {       
+        return Ok(_configuration.GetConnectionString("MicrobotContext"));
     }
     
     private int GetCachedCount()
