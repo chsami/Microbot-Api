@@ -13,6 +13,8 @@ using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddApplicationInsightsTelemetry();
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
