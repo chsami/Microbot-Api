@@ -77,12 +77,6 @@ public class SessionController : Controller
         return Ok(GetCachedLoggedInCount());
     }
     
-    [HttpGet("count/test")]
-    public IActionResult Tester()
-    {       
-        return Ok(_configuration.GetConnectionString("MicrobotContext"));
-    }
-    
     private int GetCachedCount()
     {
         if (!_memoryCache.TryGetValue("CachedCount", out int cachedData))
