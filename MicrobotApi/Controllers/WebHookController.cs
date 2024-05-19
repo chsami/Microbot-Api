@@ -30,7 +30,7 @@ public class WebHookController(ILogger<CheckoutApiController> logger, MicrobotCo
             {
                 var metaData = (stripeEvent.Data.Object as Charge).Metadata;
                 // Handle the successful checkout session
-                await HandleCheckoutSession(metaData);
+                await HandleCheckoutSession(stripeEvent.Id, metaData);
             }
             else
             {
@@ -47,7 +47,7 @@ public class WebHookController(ILogger<CheckoutApiController> logger, MicrobotCo
         }
     }
     
-    private async Task HandleCheckoutSession(Dictionary<string, string>? metadata)
+    private async Task HandleCheckoutSession(string stripeId, Dictionary<string, string>? metadata)
     {
         // You can use session.PaymentIntentId to retrieve more details about the payment if needed
         var userId = metadata?["userId"];
@@ -66,7 +66,8 @@ public class WebHookController(ILogger<CheckoutApiController> logger, MicrobotCo
         {
             Key = Guid.NewGuid().ToString(),
             HWID = "",
-            Active = true
+            Active = true,
+            PaymentReference = stripeId
         };
         
 

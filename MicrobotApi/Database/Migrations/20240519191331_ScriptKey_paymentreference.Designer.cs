@@ -3,6 +3,7 @@ using System;
 using MicrobotApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicrobotApi.Database.Migrations
 {
     [DbContext(typeof(MicrobotContext))]
-    partial class MicrobotContextModelSnapshot : ModelSnapshot
+    [Migration("20240519191331_ScriptKey_paymentreference")]
+    partial class ScriptKey_paymentreference
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

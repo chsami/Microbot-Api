@@ -52,4 +52,5 @@ public class ScriptKey
     public string Key { get; set; }
     public string HWID { get; set; }
     public bool Active { get; set; }
+    public string PaymentReference { get; set; }
 }
