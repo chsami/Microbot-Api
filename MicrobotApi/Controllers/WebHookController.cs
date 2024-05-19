@@ -26,7 +26,7 @@ public class WebHookController(ILogger<CheckoutApiController> logger, MicrobotCo
             );
 
             // Handle the event
-            if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+            if (stripeEvent.Type == Events.ChargeSucceeded)
             {
                 var session = stripeEvent.Data.Object as Session;
                 // Handle the successful checkout session
