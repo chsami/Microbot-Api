@@ -15,7 +15,7 @@ public class WebHookController(ILogger<CheckoutApiController> logger, MicrobotCo
     public async Task<IActionResult> Webhook()
     {
         var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-        var endpointSecret = configuration["Stripe:PriceSecret"]; // Set this to your Stripe webhook secret
+        var endpointSecret = configuration["Stripe:WebhookSecret"]; // Set this to your Stripe webhook secret
 
         try
         {
