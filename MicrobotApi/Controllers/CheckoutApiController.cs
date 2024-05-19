@@ -35,14 +35,17 @@ public class CheckoutApiController : Controller
                     Quantity = 1,
                 },
             },
-            Metadata = new Dictionary<string, string>
-            {
-                { "userId", createCheckOutRequest.UserId } // Add user ID as metadata
-            },
             Mode = "payment",
             SuccessUrl = domain + "/success",
             CancelUrl = domain + "/cancel",
             AutomaticTax = new SessionAutomaticTaxOptions { Enabled = true },
+            PaymentIntentData = new SessionPaymentIntentDataOptions()
+            {
+                Metadata = new Dictionary<string, string>
+                {
+                    { "userId", createCheckOutRequest.UserId } // Add user ID as metadata
+                },
+            }
         };
         var service = new SessionService();
         Session session = service.Create(options);

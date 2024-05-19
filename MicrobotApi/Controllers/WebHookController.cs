@@ -28,9 +28,9 @@ public class WebHookController(ILogger<CheckoutApiController> logger, MicrobotCo
             // Handle the event
             if (stripeEvent.Type == Events.ChargeSucceeded)
             {
-                var session = stripeEvent.Data.Object as Session;
+                var metaData = (stripeEvent.Data.Object as Charge).Metadata;
                 // Handle the successful checkout session
-                await HandleCheckoutSession(session);
+                await HandleCheckoutSession(metaData);
             }
             else
             {
@@ -47,20 +47,14 @@ public class WebHookController(ILogger<CheckoutApiController> logger, MicrobotCo
         }
     }
     
-    private async Task HandleCheckoutSession(Session? session)
+    private async Task HandleCheckoutSession(Dictionary<string, string>? metadata)
     {
-        // Implement your business logic for handling a successful checkout session
-        logger.LogInformation($"Payment for session {session?.Id} was successful.");
         // You can use session.PaymentIntentId to retrieve more details about the payment if needed
-        var userId = session?.Metadata["userId"];
+        var userId = metadata?["userId"];
 
-        if (userId == null)
-        {
-            logger.LogWarning("User id is null in checkout");
-            return;
-        }
-
-        var user = await microbotContext.DiscordUsers.FirstOrDefaultAsync(x => x.DiscordId == userId);
+        var user = await microbotContext.DiscordUsers
+            .Include(x => x.Keys)
+            .FirstOrDefaultAsync(x => x.DiscordId == userId);
 
         if (user == null)
         {
@@ -71,6 +65,7 @@ public class WebHookController(ILogger<CheckoutApiController> logger, MicrobotCo
         var key = new ScriptKey()
         {
             Key = Guid.NewGuid().ToString(),
+            HWID = "",
             Active = true
         };
         
