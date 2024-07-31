@@ -50,15 +50,14 @@ public class FileController : Controller
     }*/
     
     
-    [HttpGet("list/{environment}/{fileName}")]
-    public async Task<IActionResult> List(string environment, string fileName)
+    [HttpGet("list/{environment}")]
+    public async Task<IActionResult> List(string environment, [FromQuery] string? fileName)
     {
         var fileNames = await _azureStorageService.GetFileNames(environment, fileName);
 
         return Ok(fileNames);
-
     }
-    
+
     [HttpGet("download/{path}")]
     public async Task<IActionResult> Download(string path)
     {
