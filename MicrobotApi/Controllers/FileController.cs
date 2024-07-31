@@ -59,8 +59,8 @@ public class FileController : Controller
         return Ok(fileNames);
     }
 
-    [HttpGet("download/{path}")]
-    public async Task<IActionResult> Download(string path)
+    [HttpGet("download")]
+    public async Task<IActionResult> Download([FromQuery] string path)
     {
         var file = await _azureStorageService.DownloadFile(path);
             
