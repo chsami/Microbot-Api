@@ -1,8 +1,11 @@
-﻿using MicrobotApi.Database;
+﻿using Azure;
+using Azure.Storage.Blobs.Models;
+using MicrobotApi.Database;
+using MicrobotApi.Models;
 using MicrobotApi.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MicrobotApi.Controllers;
 
@@ -12,24 +15,63 @@ public class FileController : Controller
 {
     private readonly AzureStorageService _azureStorageService;
     private readonly MicrobotContext _microbotContext;
+    private readonly IMemoryCache _memoryCache;
 
-    public FileController(AzureStorageService azureStorageService, MicrobotContext microbotContext)
+    public FileController(AzureStorageService azureStorageService, MicrobotContext microbotContext, IMemoryCache memoryCache)
     {
         _azureStorageService = azureStorageService;
         _microbotContext = microbotContext;
+        _memoryCache = memoryCache;
+    }
+
+    /*[HttpGet("download/{fileName}/{key}/{hwid}")]
+    public async Task<IActionResult> Download(Guid fileName, string key, string hwid)
+    {
+        DateTime? dateTime = _memoryCache.Get<DateTime>(key);
+        if (!dateTime.HasValue)
+        {
+            return Unauthorized();
+        }
+        
+        var exists = await _microbotContext.Keys.AnyAsync(x => x.Key == key && (x.HWID == "" || x.HWID == hwid));
+        
+        if (!exists)
+        {
+            return Unauthorized();
+        }
+
+        var script = await _microbotContext.Scripts
+            .FirstAsync(x => x.Id == fileName);
+
+        var file = await _azureStorageService.DownloadFile(script.Name + "/" + script.Id + ".jar");
+            
+        return File(file.Value.Content, "application/octet-stream", script.Id.ToString());
+
+    }*/
+    
+    [HttpGet("{path}")]
+    public async Task<IActionResult> List(string path)
+    {
+        var downloadUrl = await _azureStorageService.GetDownloadUrl(path);
+
+        return Ok(downloadUrl);
+
     }
     
-    [Authorize]
-    [HttpGet("download/{blobName}/{key}/{hwid}")]
-    public async Task<IActionResult> Download(string blobName, string key, string hwid)
+    [HttpGet("list/{environment}/{fileName}")]
+    public async Task<IActionResult> List(string environment, string fileName)
     {
-        var exists = await _microbotContext.Keys.AnyAsync(x => x.Key == key && x.HWID == hwid);
+        var fileNames = await _azureStorageService.GetFileNames(environment, fileName);
 
-        if (!exists)
-            return Unauthorized();
-        
-        var file = await _azureStorageService.DownloadFile(blobName);
+        return Ok(fileNames);
 
-        return File(file.Value.Content, "application/octet-stream", blobName);
+    }
+    
+    [HttpGet("download{environment}/{fileName}")]
+    public async Task<IActionResult> Download(string environment, string fileName)
+    {
+        var file = await _azureStorageService.DownloadFile(environment + "/" + fileName);
+            
+        return File(file.Value.Content, "application/octet-stream", fileName);
     }
 }

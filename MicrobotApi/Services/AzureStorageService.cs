@@ -1,4 +1,6 @@
-﻿using Azure;
+﻿using System.Web;
+using Azure;
+using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
@@ -9,14 +11,16 @@ namespace MicrobotApi.Services;
 public class AzureStorageService
 {
     private readonly BlobServiceClient _blobServiceClient;
+    private readonly IConfiguration _configuration;
     private const string BlobContainer = "microbot";
     
-    public AzureStorageService(BlobServiceClient blobServiceClient)
+    public AzureStorageService(BlobServiceClient blobServiceClient, IConfiguration configuration)
     {
         _blobServiceClient = blobServiceClient;
+        _configuration = configuration;
     }
     
-    public static Uri GetSasUri(BlobBaseClient blobClient, string storedPolicyName = null)
+    public static Uri GetSasUri(BlobBaseClient blobClient)
     {
         if (!blobClient.CanGenerateSasUri)
             return null;
@@ -28,15 +32,9 @@ public class AzureStorageService
             Resource = "b"
         };
 
-        if (storedPolicyName == null)
-        {
-            sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddHours(2);
-            sasBuilder.SetPermissions(BlobSasPermissions.Read);
-        }
-        else
-        {
-            sasBuilder.Identifier = storedPolicyName;
-        }
+        sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(5);
+        sasBuilder.SetPermissions(BlobSasPermissions.Read);
+        
 
         var sasUri = blobClient.GenerateSasUri(sasBuilder);
         return sasUri;
@@ -46,9 +44,36 @@ public class AzureStorageService
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(BlobContainer);
         var blobClient = containerClient.GetBlobClient(storagePath);
-
+        
         var blobData =  blobClient.DownloadAsync();
 
         return blobData;
+    }
+
+    public async Task<Uri> GetDownloadUrl(string storagePath)
+    {
+        var containerClient = _blobServiceClient.GetBlobContainerClient(BlobContainer);
+        
+        BlobClient blobClient = containerClient.GetBlobClient(HttpUtility.UrlDecode(storagePath));
+        Uri sasUri = blobClient.GenerateSasUri(BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddHours(1));
+        return sasUri;
+    }
+    
+    public async Task<List<string>> GetFileNames(string storagePath, string fileName)
+    {
+        var containerClient = _blobServiceClient.GetBlobContainerClient(BlobContainer);
+
+        var fileNames = new List<string>();
+
+        // List blobs in the container
+        await foreach (BlobItem blobItem in containerClient.GetBlobsAsync(prefix: storagePath))
+        {
+            if (blobItem.Name.Contains(fileName))
+            {
+                fileNames.Add(blobItem.Name);
+            }
+        }
+
+        return fileNames;
     }
 }
