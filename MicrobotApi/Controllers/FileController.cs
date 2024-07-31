@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using System.Web;
+using Azure;
 using Azure.Storage.Blobs.Models;
 using MicrobotApi.Database;
 using MicrobotApi.Models;
@@ -63,6 +64,6 @@ public class FileController : Controller
     {
         var file = await _azureStorageService.DownloadFile(path);
             
-        return File(file.Value.Content, "application/octet-stream", Path.GetFileName(path));
+        return File(file.Value.Content, "application/octet-stream", Path.GetFileName(HttpUtility.UrlDecode(path)));
     }
 }

@@ -43,7 +43,7 @@ public class AzureStorageService
     public Task<Response<BlobDownloadInfo>> DownloadFile(string storagePath)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(BlobContainer);
-        var blobClient = containerClient.GetBlobClient(storagePath);
+        var blobClient = containerClient.GetBlobClient(HttpUtility.UrlDecode(storagePath));
         
         var blobData =  blobClient.DownloadAsync();
 
