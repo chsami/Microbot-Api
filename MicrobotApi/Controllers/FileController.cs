@@ -49,14 +49,6 @@ public class FileController : Controller
 
     }*/
     
-    [HttpGet("{path}")]
-    public async Task<IActionResult> List(string path)
-    {
-        var downloadUrl = await _azureStorageService.GetDownloadUrl(path);
-
-        return Ok(downloadUrl);
-
-    }
     
     [HttpGet("list/{environment}/{fileName}")]
     public async Task<IActionResult> List(string environment, string fileName)
@@ -67,11 +59,11 @@ public class FileController : Controller
 
     }
     
-    [HttpGet("download{environment}/{fileName}")]
-    public async Task<IActionResult> Download(string environment, string fileName)
+    [HttpGet("download/{path}")]
+    public async Task<IActionResult> Download(string path)
     {
-        var file = await _azureStorageService.DownloadFile(environment + "/" + fileName);
+        var file = await _azureStorageService.DownloadFile(path);
             
-        return File(file.Value.Content, "application/octet-stream", fileName);
+        return File(file.Value.Content, "application/octet-stream", Path.GetFileName(path));
     }
 }
