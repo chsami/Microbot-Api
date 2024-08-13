@@ -59,14 +59,14 @@ public class AzureStorageService
         return sasUri;
     }
     
-    public async Task<List<string>> GetFileNames(string storagePath, string? fileName)
+    public async Task<List<string>> GetFileNames(string? fileName)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(BlobContainer);
 
         var fileNames = new List<string>();
 
         // List blobs in the container
-        await foreach (BlobItem blobItem in containerClient.GetBlobsAsync(prefix: storagePath))
+        await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
         {
             if (string.IsNullOrWhiteSpace(fileName) || blobItem.Name.Contains(fileName))
             {
