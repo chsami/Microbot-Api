@@ -50,13 +50,22 @@ public class FileController : Controller
 
     }*/
     
-    
-    [HttpGet("list")]
-    public async Task<IActionResult> List([FromQuery] string? fileName)
+    [HttpGet("launcher")]
+    public async Task<IActionResult> Launcher()
     {
-        var fileNames = await _azureStorageService.GetFileNames(fileName);
-
-        return Ok(fileNames);
+        return Ok("1.0.0");
+    }
+    
+    [HttpGet("client")]
+    public async Task<IActionResult> Client()
+    {
+        return Ok("1.4.3");
+    }
+    
+    [HttpGet("html")]
+    public async Task<IActionResult> Html()
+    {
+        return Ok("1.0.0");
     }
 
     [HttpGet("download")]
