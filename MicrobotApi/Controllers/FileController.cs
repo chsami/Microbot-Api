@@ -53,7 +53,7 @@ public class FileController : Controller
     [HttpGet("launcher")]
     public async Task<IActionResult> Launcher()
     {
-        return Ok("1.0.0");
+        return Ok("1.0.1");
     }
     
     [HttpGet("client")]
