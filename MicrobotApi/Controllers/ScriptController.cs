@@ -8,12 +8,12 @@ namespace MicrobotApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ScriptController(MicrobotContext microbotContext, IMemoryCache memoryCache, XataService xataService)
+public class ScriptController(XataService xataService)
     : Controller
 {
     private readonly XataService _xataService = xataService;
 
-    [HttpGet("{key}/{hwid}")]
+    /*[HttpGet("{key}/{hwid}")]
     public async Task<IActionResult> List(string key, string hwid)
     {
         var exists = await microbotContext.Keys.AnyAsync(x => x.Key == key && (x.HWID == "" || x.HWID == hwid));
@@ -30,7 +30,7 @@ public class ScriptController(MicrobotContext microbotContext, IMemoryCache memo
         memoryCache.Set(key, DateTime.Now, cacheEntryOptions);
 
         return Ok(scripts.Select(x => x.Id));
-    }
+    }*/
 
 
     [HttpPost("runtime")]

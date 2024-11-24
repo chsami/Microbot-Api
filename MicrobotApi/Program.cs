@@ -1,13 +1,12 @@
 using Azure.Storage.Blobs;
+using Discord.Commands;
+using Discord.WebSocket;
 using MicrobotApi;
 using MicrobotApi.Database;
 using MicrobotApi.Handlers;
 using MicrobotApi.Services;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.OpenApi.Models;
 using Stripe;
 
@@ -81,7 +80,12 @@ builder.Services.AddHttpClient<DiscordService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Discord:Api"]);
 });
+/*builder.Services.AddSingleton<DiscordBotService>();
+builder.Services.AddHostedService<BotHostedService>();*/
 builder.Services.AddScoped<AzureStorageService>();
+/*builder.Services.AddSingleton<DiscordSocketClient>();
+builder.Services.AddSingleton<CommandService>();*/
+builder.Services.AddScoped<XataService>();
 builder.Services.AddSingleton(c =>
     new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobConnection"))
 );
