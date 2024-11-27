@@ -59,7 +59,7 @@ public class FileController : Controller
     [HttpGet("client")]
     public async Task<IActionResult> Client()
     {
-        return Ok("1.6.4");
+        return Ok("1.6.4.1");
     }
     
     [HttpGet("html")]
