@@ -61,36 +61,6 @@ public class AuthController : Controller
         return BadRequest("Code is missing!");
     }
 
-    [HttpGet("test")]
-    [Authorize]
-    public async Task<IActionResult> Test()
-    {
-        return Ok("hello world");
-    }
-    // [HttpGet("discord/token/{userId}")]
-    // public async Task<IActionResult> Token(string userId = "126659209642246144")
-    // {
-    //     var discordUser = await _microbotContext.DiscordUsers.FirstOrDefaultAsync(x => x.DiscordId == userId);
-    //
-    //     if (discordUser == null)
-    //         return BadRequest("User not found");
-    //
-    //     if (discordUser.TokenExpiry < DateTime.UtcNow) 
-    //         return Ok(discordUser.Token);
-    //     
-    //     var clientId = _configuration["Discord:ClientId"];
-    //     var clientSecret = _configuration["Discord:ClientSecret"];
-    //     var redirectUri = _configuration["Discord:RedirectUri"];
-    //
-    //     var token = await _discordService.RefreshAccessToken(clientId, clientSecret, discordUser.RefreshToken, redirectUri);
-    //
-    //     if (string.IsNullOrWhiteSpace(token))
-    //         return BadRequest("Invalid code!");
-    //
-    //     return Ok(token);
-    //
-    // }
-    
     [HttpGet("userinfo")]
     [Authorize]
     public async Task<IActionResult> UserInfo()
