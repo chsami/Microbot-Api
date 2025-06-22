@@ -50,6 +50,12 @@ public class FileController : Controller
 
     }*/
     
+    [HttpGet("test")]
+    public async Task<IActionResult> Test()
+    {
+        return Ok("test OK!");
+    }
+    
     [HttpGet("launcher")]
     public async Task<IActionResult> Launcher()
     {
