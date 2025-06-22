@@ -1,4 +1,5 @@
 ﻿using MicrobotApi.Database;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -66,12 +67,14 @@ public class SessionController : Controller
     }
     
     [HttpGet("count")]
+    [EnableCors("AllowFrontendOnly")]
     public IActionResult Count()
     {
         return Ok(GetCachedCount());
     }
     
     [HttpGet("count/loggedIn")]
+    [EnableCors("AllowFrontendOnly")]
     public IActionResult CountLoggedIn()
     {       
         return Ok(GetCachedLoggedInCount());

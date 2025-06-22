@@ -16,19 +16,15 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
-        builder =>
-        {
-            builder
-            .WithOrigins(
-                    "http://localhost:4200", "https://*.vercel.app")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-        });
+    options.AddPolicy("AllowFrontendOnly", policy =>
+    {
+        policy.WithOrigins("https://themicrobot.com")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
 
-StripeConfiguration.ApiKey = "sk_test_51PHBkLJ45WMcMRTutHNGpJZvzToGIf0EazZTuT38eTwoRbHuAoqajpCUZ1bdmWperK6jazc7wLdHHdX7x0PFdo6R00vEff23me";
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:ApiKey"];
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -80,12 +76,7 @@ builder.Services.AddHttpClient<DiscordService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Discord:Api"]);
 });
-/*builder.Services.AddSingleton<DiscordBotService>();
-builder.Services.AddHostedService<BotHostedService>();*/
 builder.Services.AddScoped<AzureStorageService>();
-/*builder.Services.AddSingleton<DiscordSocketClient>();
-builder.Services.AddSingleton<CommandService>();*/
-builder.Services.AddScoped<XataService>();
 builder.Services.AddSingleton(c =>
     new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobConnection"))
 );
