@@ -67,14 +67,12 @@ public class SessionController : Controller
     }
     
     [HttpGet("count")]
-    [EnableCors("AllowFrontendOnly")]
     public IActionResult Count()
     {
         return Ok(GetCachedCount());
     }
     
     [HttpGet("count/loggedIn")]
-    [EnableCors("AllowFrontendOnly")]
     public IActionResult CountLoggedIn()
     {       
         return Ok(GetCachedLoggedInCount());

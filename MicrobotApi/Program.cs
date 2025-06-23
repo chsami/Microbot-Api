@@ -14,16 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationInsightsTelemetry();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontendOnly", policy =>
-    {
-        policy.WithOrigins("https://themicrobot.com")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
-
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:ApiKey"];
 
 // Add services to the container.
