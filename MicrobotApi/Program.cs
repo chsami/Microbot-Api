@@ -14,6 +14,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationInsightsTelemetry();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        builder =>
+        {
+            builder
+                .WithOrigins(
+                    "https://themicrobot.com")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
+
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:ApiKey"];
 
 // Add services to the container.
